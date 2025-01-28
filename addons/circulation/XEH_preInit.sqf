@@ -7,11 +7,13 @@ PREP_RECOMPILE_START;
 PREP_RECOMPILE_END;
 
 if (isServer) then {
-    GVAR(bloodSampleMap) = createHashMap;
-    GVAR(sampleCounter) = 0;
-
-    GVAR(resultSampleMap) = createHashMap;
-    GVAR(resultCounter) = 0;
+    private _sampleMap = createHashMap;
+    missionNamespace setVariable [QGVAR(bloodSampleMap), _sampleMap];
+    missionNamespace setVariable [QGVAR(sampleCounter), 0];
+    
+    private _resultSampleMap = createHashMap;
+    missionNamespace setVariable [QGVAR(resultSampleMap), _resultSampleMap];
+    missionNamespace setVariable [QGVAR(resultCounter), 0];
 };
 
 #define CBA_SETTINGS_CAT "KAT - ADV Medical: Circulation"
@@ -68,6 +70,16 @@ if (isServer) then {
     [LLSTRING(SETTING_bloodtype_custom_list), LLSTRING(SETTING_bloodtype_custom_list_DESC)],
     [CBA_SETTINGS_CAT, ELSTRING(GUI,SubCategory_Basic)],
     "O,O,A,A,O_N,B,A_N,AB,B_N,AB_N",
+    true
+] call CBA_Settings_fnc_init;
+
+// Enables ABG Menu and Testing
+[
+    QGVAR(abgEnable),
+    "CHECKBOX",
+    [LLSTRING(SETTING_abg_enable), LLSTRING(SETTING_abg_enable_DESC)],
+    [CBA_SETTINGS_CAT, ELSTRING(GUI,SubCategory_Basic)],
+    [false],
     true
 ] call CBA_Settings_fnc_init;
 
@@ -384,6 +396,16 @@ if (isServer) then {
     LLSTRING(SETTING_AdvRhythm_deteriorateTimeWeight),
     [CBA_SETTINGS_CAT, LSTRING(SubCategory_AdvRhythms)],
     [20,3600,180,0],
+    true
+] call CBA_Settings_fnc_init;
+
+// Sets whether or not H&T conditions keep patients in cardiac arrest until resolved
+[
+    QGVAR(AdvRhythm_HTHold),
+    "CHECKBOX",
+    LLSTRING(SETTING_AdvRhythm_HTHold),
+    [CBA_SETTINGS_CAT, LSTRING(SubCategory_AdvRhythms)],
+    [false],
     true
 ] call CBA_Settings_fnc_init;
 
